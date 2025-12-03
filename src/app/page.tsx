@@ -1,3 +1,5 @@
+'use client';
+
 import { Calculator, FunctionSquare, Pilcrow } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Header } from '@/components/mathverse/header';
