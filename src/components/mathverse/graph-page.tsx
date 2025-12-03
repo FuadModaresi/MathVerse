@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useRef, useCallback } from 'react';
@@ -20,7 +21,6 @@ export function GraphPage() {
       const svgElement = graphContainerRef.current.querySelector('svg');
       if (svgElement) {
         const svgString = new XMLSerializer().serializeToString(svgElement);
-        //
         const encoded = btoa(unescape(encodeURIComponent(svgString)));
         return `data:image/svg+xml;base64,${encoded}`;
       }
@@ -29,7 +29,10 @@ export function GraphPage() {
   }, []);
 
   return (
-    <div className="grid md:grid-cols-[350px_1fr] gap-6 h-full">
+    <div className="grid md:grid-cols-[1fr_350px] gap-6 h-full">
+      <Card className="overflow-hidden" ref={graphContainerRef}>
+        <GraphingEngine equations={equations.filter(eq => eq.isVisible)} />
+      </Card>
       <Card className="p-4 flex flex-col gap-4 overflow-y-auto">
         <div>
             <h2 className="text-xl font-bold font-headline">Graphing Engine</h2>
@@ -39,9 +42,6 @@ export function GraphPage() {
         <EquationEditor equations={equations} setEquations={setEquations} />
         <Separator/>
         <AiExplainer equations={equations} getGraphAsSvgDataUri={getGraphAsSvgDataUri} />
-      </Card>
-      <Card className="overflow-hidden" ref={graphContainerRef}>
-        <GraphingEngine equations={equations.filter(eq => eq.isVisible)} />
       </Card>
     </div>
   );
