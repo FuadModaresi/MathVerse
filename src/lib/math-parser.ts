@@ -1,8 +1,6 @@
 'use client';
 // A simple and safe math parser to convert a string expression into a plottable function.
 
-const ALLOWED_CHARS_REGEX = /^[a-z0-9\s.()+\-*/^]+$/i;
-
 // A list of Math properties that are allowed to be used.
 const MATH_ALLOWLIST: { [key: string]: Function | number } = {
   // Functions
@@ -64,48 +62,38 @@ export function createFunction(expression: string): (x: number) => number {
   if (!expression || expression.trim() === '') {
     return () => NaN;
   }
-  // 1. Character validation
-  if (!ALLOWED_CHARS_REGEX.test(expression)) {
-    throw new Error('Expression contains invalid characters.');
-  }
-
-  // 2. Transform expression for JS compatibility
-  // Replace ^ with ** for exponentiation
-  let sanitizedExpression = expression.replace(/\^/g, '**');
-
-  // Find all identifiers in the expression
-  const identifiers = [...new Set(sanitizedExpression.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [])];
   
-  // Sort identifiers by length descending to avoid partial replacements (e.g. 'sin' before 'sinh')
-  identifiers.sort((a, b) => b.length - a.length);
+  // 1. Transform expression for JS compatibility (e.g., ^ to **)
+  const jsExpression = expression.replace(/\^/g, '**');
+
+  // 2. Validate all identifiers used in the expression
+  const identifiers = [...new Set(jsExpression.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [])];
 
   for (const identifier of identifiers) {
-    // Skip 'x' and numeric values
-    if (identifier === 'x' || !isNaN(parseFloat(identifier))) {
-      continue;
+    if (identifier === 'x') {
+      continue; // 'x' is our allowed variable
     }
-    
-    // If the identifier is in our allowlist, prefix it to use our sandboxed object
-    if (MATH_ALLOWLIST.hasOwnProperty(identifier)) {
-        sanitizedExpression = sanitizedExpression.replace(new RegExp(`\\b${identifier}\\b`, 'g'), `MATH_ALLOWLIST.${identifier}`);
-    } else {
-        // If it's not in the allowlist, it's a disallowed identifier.
-        throw new Error(`Disallowed identifier: "${identifier}"`);
+    if (identifier in MATH_ALLOWLIST) {
+      continue; // The identifier is a valid Math function or constant
     }
+    // Any other identifier is disallowed.
+    throw new Error(`Disallowed identifier: "${identifier}"`);
   }
-
 
   try {
     // 3. Create the function in a sandboxed environment
-    const func = new Function('x', 'MATH_ALLOWLIST', `
-      try {
-        return ${sanitizedExpression};
-      } catch (e) {
-        return NaN;
+    // We pass the entire MATH_ALLOWLIST object into the function's scope.
+    const func = new Function('x', 'm', `
+      with (m) {
+        try {
+          return ${jsExpression};
+        } catch (e) {
+          return NaN;
+        }
       }
     `);
 
-    // Bind the allowlist to the function
+    // 4. Bind the allowlist to the function's second argument
     return (x: number) => func(x, MATH_ALLOWLIST);
   } catch (e) {
     console.error('Error creating function:', e);
