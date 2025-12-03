@@ -3,9 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Palette, Plus, Trash2, Pilcrow } from 'lucide-react';
-import { Switch } from '../ui/switch';
-import { Label } from '../ui/label';
+import { Palette, Plus, Trash2, Pilcrow, Eye, EyeOff } from 'lucide-react';
 import {
   Popover,
   PopoverContent,
@@ -71,7 +69,7 @@ export function EquationEditor({ equations, setEquations }: EquationEditorProps)
       <div className="space-y-4">
         {equations.map(eq => (
           <div key={eq.id} className="space-y-2">
-             <Label htmlFor={`eq-${eq.id}`} className="text-sm font-medium">f(x) =</Label>
+             <label htmlFor={`eq-${eq.id}`} className="text-sm font-medium">f(x) =</label>
             <div className="flex items-center gap-2">
               <Input
                 id={`eq-${eq.id}`}
@@ -102,11 +100,14 @@ export function EquationEditor({ equations, setEquations }: EquationEditorProps)
                 />
                  <Palette className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white mix-blend-difference pointer-events-none" />
               </div>
-               <Switch
-                checked={eq.isVisible}
-                onCheckedChange={checked => updateEquation(eq.id, 'isVisible', checked)}
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => updateEquation(eq.id, 'isVisible', !eq.isVisible)}
                 aria-label="Toggle visibility"
-              />
+              >
+                {eq.isVisible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4 text-muted-foreground" />}
+              </Button>
               <Button
                 variant="ghost"
                 size="icon"
