@@ -42,15 +42,9 @@ export function AiExplainer({ equations, getGraphAsSvgDataUri }: AiExplainerProp
 
     try {
       const equationString = visibleEquations.map(eq => eq.value).join(', ');
-      const graphDataUri = await getGraphAsSvgDataUri();
       
-      if (!graphDataUri) {
-        throw new Error("Could not capture graph image.");
-      }
-
       const input: ExplainGraphWithAIInput = {
         equation: equationString,
-        graphDataUri: graphDataUri,
       };
 
       const result = await explainGraphWithAI(input);
