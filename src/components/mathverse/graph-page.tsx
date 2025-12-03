@@ -29,12 +29,9 @@ export function GraphPage() {
   }, []);
 
   return (
-    <div className="grid md:grid-cols-[1fr_350px] gap-6 h-full">
-      <Card className="overflow-hidden" ref={graphContainerRef}>
-        <GraphingEngine equations={equations.filter(eq => eq.isVisible)} />
-      </Card>
+    <div className="grid md:grid-cols-[350px_1fr] gap-6 h-full">
       <Card className="p-4 flex flex-col gap-4 overflow-y-auto">
-        <div>
+        <div className="text-left">
             <h2 className="text-xl font-bold font-headline">Graphing Engine</h2>
             <p className="text-muted-foreground text-sm mt-1">Plot and explore functions.</p>
         </div>
@@ -42,6 +39,9 @@ export function GraphPage() {
         <EquationEditor equations={equations} setEquations={setEquations} />
         <Separator/>
         <AiExplainer equations={equations} getGraphAsSvgDataUri={getGraphAsSvgDataUri} />
+      </Card>
+      <Card className="overflow-hidden" ref={graphContainerRef}>
+        <GraphingEngine equations={equations.filter(eq => eq.isVisible)} />
       </Card>
     </div>
   );
