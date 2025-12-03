@@ -11,6 +11,7 @@ import {
   Legend,
   ResponsiveContainer,
   ReferenceLine,
+  Label,
 } from 'recharts';
 import { createFunction } from '@/lib/math-parser';
 import { Button } from '../ui/button';
@@ -80,9 +81,9 @@ export function GraphingEngine({ equations }: GraphingEngineProps) {
   };
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.currentTarget.classList.add('cursor-grabbing');
     setIsPanning(true);
     lastMousePos.current = { x: e.clientX, y: e.clientY };
-    e.currentTarget.classList.add('cursor-grabbing');
   }, []);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
@@ -100,14 +101,14 @@ export function GraphingEngine({ equations }: GraphingEngineProps) {
   }, [isPanning, domain]);
 
   const handleMouseUpOrLeave = useCallback((e: React.MouseEvent) => {
+    e.currentTarget.classList.remove('cursor-grabbing');
     setIsPanning(false);
     lastMousePos.current = null;
-    e.currentTarget.classList.remove('cursor-grabbing');
   }, []);
 
 
   return (
-    <div className="w-full h-full flex flex-col relative"
+    <div className="w-full h-full flex flex-col relative cursor-grab"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUpOrLeave}
@@ -119,7 +120,7 @@ export function GraphingEngine({ equations }: GraphingEngineProps) {
             <Button size="icon" variant="outline" onClick={resetView}><RefreshCw className="w-4 h-4"/></Button>
         </div>
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
+        <LineChart data={data} margin={{ top: 20, right: 40, left: 10, bottom: 20 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
           <XAxis
             dataKey="x"
@@ -127,12 +128,18 @@ export function GraphingEngine({ equations }: GraphingEngineProps) {
             domain={domain}
             allowDataOverflow={true}
             stroke="hsl(var(--foreground))"
-          />
+            tick={{ fill: 'hsl(var(--foreground))' }}
+          >
+            <Label value="x" offset={-10} position="insideBottom" fill="hsl(var(--foreground))" />
+          </XAxis>
           <YAxis 
             allowDataOverflow={true} 
             domain={['auto', 'auto']}
             stroke="hsl(var(--foreground))"
-           />
+            tick={{ fill: 'hsl(var(--foreground))' }}
+           >
+            <Label value="y" offset={10} angle={-90} position="insideLeft" fill="hsl(var(--foreground))" />
+           </YAxis>
           <Tooltip
             contentStyle={{
               backgroundColor: 'hsl(var(--background))',
