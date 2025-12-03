@@ -67,6 +67,7 @@ export function createFunction(expression: string): (x: number) => number {
   const jsExpression = expression.replace(/\^/g, '**');
 
   // 2. Validate all identifiers used in the expression
+  // This regex finds all sequences of letters that could be variable or function names.
   const identifiers = [...new Set(jsExpression.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [])];
 
   for (const identifier of identifiers) {
