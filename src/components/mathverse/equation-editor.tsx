@@ -69,8 +69,8 @@ export function EquationEditor({ equations, setEquations }: EquationEditorProps)
       <div className="space-y-4">
         {equations.map(eq => (
           <div key={eq.id} className="space-y-2">
-             <label htmlFor={`eq-${eq.id}`} className="text-sm font-medium">f(x) =</label>
             <div className="flex items-center gap-2">
+              <label htmlFor={`eq-${eq.id}`} className="text-sm font-medium">f(x) =</label>
               <Input
                 id={`eq-${eq.id}`}
                 type="text"
