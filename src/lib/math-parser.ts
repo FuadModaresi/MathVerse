@@ -74,15 +74,17 @@ export function createFunction(expression: string): (x: number) => number {
   let sanitizedExpression = expression.replace(/\^/g, '**');
 
   // Prefix allowed Math functions/constants with "MATH_ALLOWLIST."
-  const identifiers = sanitizedExpression.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [];
-  const seen = new Set();
+  const identifiers = [...new Set(sanitizedExpression.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [])];
+  
+  // Sort identifiers by length descending to avoid partial replacements (e.g. 'sin' before 'sinh')
+  identifiers.sort((a, b) => b.length - a.length);
+
   for (const identifier of identifiers) {
-    if (identifier === 'x' || seen.has(identifier) || !isNaN(parseFloat(identifier))) {
+    if (identifier === 'x' || !isNaN(parseFloat(identifier))) {
       continue;
     }
     if (MATH_ALLOWLIST.hasOwnProperty(identifier)) {
         sanitizedExpression = sanitizedExpression.replace(new RegExp(`\\b${identifier}\\b`, 'g'), `MATH_ALLOWLIST.${identifier}`);
-        seen.add(identifier);
     } else {
         throw new Error(`Disallowed identifier: "${identifier}"`);
     }
