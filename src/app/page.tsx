@@ -1,13 +1,21 @@
 'use client';
 
+import { useState } from 'react';
 import { Calculator, FunctionSquare, Pilcrow } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Header } from '@/components/mathverse/header';
 import { GraphPage } from '@/components/mathverse/graph-page';
 import { CalculatorPage } from '@/components/mathverse/calculator-page';
 import { MathKeyboard } from '@/components/mathverse/math-keyboard';
+import { Textarea } from '@/components/ui/textarea';
 
 export default function Home() {
+  const [keyboardInput, setKeyboardInput] = useState('');
+
+  const handleKeyboardPress = (key: string) => {
+    setKeyboardInput(prev => prev + key);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
       <Header />
@@ -23,7 +31,13 @@ export default function Home() {
             <div className="max-w-4xl mx-auto">
               <h2 className="text-2xl font-bold mb-4 font-headline">Mathematical Keyboard</h2>
               <p className="text-muted-foreground mb-6">A custom keyboard for easy input of mathematical symbols.</p>
-              <MathKeyboard onKeyPress={() => {}} />
+              <Textarea
+                value={keyboardInput}
+                onChange={(e) => setKeyboardInput(e.target.value)}
+                placeholder="Symbols will appear here..."
+                className="mb-4 h-32 text-lg"
+              />
+              <MathKeyboard onKeyPress={handleKeyboardPress} />
             </div>
           </TabsContent>
         </div>

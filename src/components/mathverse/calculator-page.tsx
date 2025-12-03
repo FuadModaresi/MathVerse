@@ -108,14 +108,20 @@ export function CalculatorPage() {
   const [{ currentOperand, previousOperand, operation }, dispatch] = useReducer(reducer, initialState);
 
   const handleKeyPress = (key: string) => {
-    if (key >= '0' && key <= '9' || key === '.') {
+    if ((key >= '0' && key <= '9') || key === '.') {
       dispatch({ type: 'ADD_DIGIT', payload: key });
-    } else if (['+', '-', '×', '÷'].includes(key)) {
+    } else if (['+', '-', '×', '÷', '%'].includes(key)) {
       dispatch({ type: 'CHOOSE_OPERATION', payload: key });
     } else if (key === '=') {
       dispatch({ type: 'EVALUATE' });
     } else if (key === 'AC') {
         dispatch({ type: 'CLEAR' });
+    } else if (key === 'C') {
+        dispatch({ type: 'DELETE_DIGIT' });
+    } else {
+      // For other math keys, just add them to the current input for now
+      // This is a simple implementation. A real app would parse and calculate these.
+       dispatch({ type: 'ADD_DIGIT', payload: key });
     }
   };
 
@@ -146,13 +152,7 @@ export function CalculatorPage() {
                         key={label}
                         variant={isOperator ? 'default' : 'secondary'}
                         className={`h-16 text-2xl ${isWide ? 'col-span-2' : ''}`}
-                        onClick={() => {
-                            if (label === '=') dispatch({ type: 'EVALUATE' });
-                            else if (label === 'AC') dispatch({ type: 'CLEAR' });
-                            else if (label === 'C') dispatch({ type: 'DELETE_DIGIT' });
-                            else if (isOperator || ['%'].includes(label)) dispatch({ type: 'CHOOSE_OPERATION', payload: label });
-                            else dispatch({ type: 'ADD_DIGIT', payload: label });
-                        }}
+                        onClick={() => handleKeyPress(label)}
                     >
                         {label}
                     </Button>
