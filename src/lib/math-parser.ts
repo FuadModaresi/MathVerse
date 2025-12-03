@@ -63,26 +63,11 @@ export function createFunction(expression: string): (x: number) => number {
     return () => NaN;
   }
   
-  // 1. Transform expression for JS compatibility (e.g., ^ to **)
+  // Transform expression for JS compatibility (e.g., ^ to **)
   const jsExpression = expression.replace(/\^/g, '**');
 
-  // 2. Validate all identifiers used in the expression
-  // This regex finds all sequences of letters that could be variable or function names.
-  const identifiers = [...new Set(jsExpression.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [])];
-
-  for (const identifier of identifiers) {
-    if (identifier === 'x') {
-      continue; // 'x' is our allowed variable
-    }
-    if (identifier in MATH_ALLOWLIST) {
-      continue; // The identifier is a valid Math function or constant
-    }
-    // Any other identifier is disallowed.
-    throw new Error(`Disallowed identifier: "${identifier}"`);
-  }
-
   try {
-    // 3. Create the function in a sandboxed environment
+    // Create the function in a sandboxed environment
     // We pass the entire MATH_ALLOWLIST object into the function's scope.
     const func = new Function('x', 'm', `
       with (m) {
@@ -94,7 +79,7 @@ export function createFunction(expression: string): (x: number) => number {
       }
     `);
 
-    // 4. Bind the allowlist to the function's second argument
+    // Bind the allowlist to the function's second argument
     return (x: number) => func(x, MATH_ALLOWLIST);
   } catch (e) {
     console.error('Error creating function:', e);
