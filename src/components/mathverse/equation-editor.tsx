@@ -79,6 +79,7 @@ export function EquationEditor({ equations, setEquations }: EquationEditorProps)
                 onFocus={() => setActiveInputId(eq.id)}
                 placeholder="e.g., x^2"
                 className="font-mono"
+                dir="ltr"
               />
                <Popover>
                 <PopoverTrigger asChild>
