@@ -56,7 +56,7 @@ const MATH_ALLOWLIST: { [key: string]: Function | number } = {
  *
  * @param expression The math expression string, e.g., "sin(x) * 2".
  * @returns A function that takes a number 'x' and returns the result of the expression.
- * @throws An error if the expression is invalid or contains disallowed characters/properties.
+ * @throws An error if the expression contains disallowed characters/properties.
  */
 export function createFunction(expression: string): (x: number) => number {
   if (!expression || expression.trim() === '') {
@@ -98,6 +98,8 @@ export function createFunction(expression: string): (x: number) => number {
     return (x: number) => func(x, MATH_ALLOWLIST);
   } catch (e) {
     console.error('Error creating function:', e);
-    throw new Error('Invalid mathematical expression.');
+    // This outer catch is a fallback. The inner try/catch should handle most evaluation errors.
+    // However, if the expression has a syntax error that `new Function` rejects, this will catch it.
+    return () => NaN;
   }
 }
