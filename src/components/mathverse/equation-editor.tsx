@@ -1,11 +1,18 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Eye, EyeOff, Palette, Plus, Trash2 } from 'lucide-react';
+import { Palette, Plus, Trash2, Pilcrow } from 'lucide-react';
 import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { MathKeyboard } from './math-keyboard';
+
 
 export interface Equation {
   id: number;
@@ -22,6 +29,8 @@ interface EquationEditorProps {
 const defaultColors = ['#FF00FF', '#00FFFF', '#FFFF00', '#FF0000', '#00FF00', '#0000FF'];
 
 export function EquationEditor({ equations, setEquations }: EquationEditorProps) {
+  const [activeInputId, setActiveInputId] = useState<number | null>(null);
+
   const addEquation = () => {
     const newId = equations.length > 0 ? Math.max(...equations.map(e => e.id)) + 1 : 1;
     const nextColor = defaultColors[equations.length % defaultColors.length];
@@ -39,6 +48,16 @@ export function EquationEditor({ equations, setEquations }: EquationEditorProps)
 
   const removeEquation = (id: number) => {
     setEquations(equations.filter(eq => eq.id !== id));
+  };
+  
+  const handleKeyboardPress = (key: string) => {
+    if (activeInputId === null) return;
+    setEquations(equations.map(eq => {
+      if (eq.id === activeInputId) {
+        return { ...eq, value: eq.value + key };
+      }
+      return eq;
+    }));
   };
 
   return (
@@ -59,9 +78,20 @@ export function EquationEditor({ equations, setEquations }: EquationEditorProps)
                 type="text"
                 value={eq.value}
                 onChange={e => updateEquation(eq.id, 'value', e.target.value)}
+                onFocus={() => setActiveInputId(eq.id)}
                 placeholder="e.g., x^2"
                 className="font-mono"
               />
+               <Popover>
+                <PopoverTrigger asChild>
+                   <Button variant="outline" size="icon" onClick={() => setActiveInputId(eq.id)}>
+                      <Pilcrow className="h-4 w-4" />
+                   </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <MathKeyboard onKeyPress={handleKeyboardPress} />
+                </PopoverContent>
+              </Popover>
               <div className="relative">
                 <Input
                   type="color"
