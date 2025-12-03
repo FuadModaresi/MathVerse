@@ -73,19 +73,23 @@ export function createFunction(expression: string): (x: number) => number {
   // Replace ^ with ** for exponentiation
   let sanitizedExpression = expression.replace(/\^/g, '**');
 
-  // Prefix allowed Math functions/constants with "MATH_ALLOWLIST."
+  // Find all identifiers in the expression
   const identifiers = [...new Set(sanitizedExpression.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [])];
   
   // Sort identifiers by length descending to avoid partial replacements (e.g. 'sin' before 'sinh')
   identifiers.sort((a, b) => b.length - a.length);
 
   for (const identifier of identifiers) {
+    // Skip 'x' and numeric values
     if (identifier === 'x' || !isNaN(parseFloat(identifier))) {
       continue;
     }
+    
+    // If the identifier is in our allowlist, prefix it to use our sandboxed object
     if (MATH_ALLOWLIST.hasOwnProperty(identifier)) {
         sanitizedExpression = sanitizedExpression.replace(new RegExp(`\\b${identifier}\\b`, 'g'), `MATH_ALLOWLIST.${identifier}`);
     } else {
+        // If it's not in the allowlist, it's a disallowed identifier.
         throw new Error(`Disallowed identifier: "${identifier}"`);
     }
   }
