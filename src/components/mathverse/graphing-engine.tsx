@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  ReferenceLine,
 } from 'recharts';
 import { createFunction } from '@/lib/math-parser';
 import { Button } from '../ui/button';
@@ -139,6 +140,8 @@ export function GraphingEngine({ equations }: GraphingEngineProps) {
             }}
           />
           <Legend />
+          <ReferenceLine y={0} stroke="hsl(var(--foreground))" strokeWidth={1} />
+          <ReferenceLine x={0} stroke="hsl(var(--foreground))" strokeWidth={1} />
           {functions.map(({ id, color, name }) => (
             <Line
               key={id}
@@ -151,7 +154,6 @@ export function GraphingEngine({ equations }: GraphingEngineProps) {
               isAnimationActive={false}
             />
           ))}
-          <Line dataKey="zero" stroke="hsl(var(--foreground))" strokeWidth={1} dot={false} name="x-axis" />
         </LineChart>
       </ResponsiveContainer>
     </div>
