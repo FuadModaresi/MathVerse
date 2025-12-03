@@ -1,0 +1,94 @@
+'use client';
+
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Eye, EyeOff, Palette, Plus, Trash2 } from 'lucide-react';
+import { Switch } from '../ui/switch';
+import { Label } from '../ui/label';
+
+export interface Equation {
+  id: number;
+  value: string;
+  color: string;
+  isVisible: boolean;
+}
+
+interface EquationEditorProps {
+  equations: Equation[];
+  setEquations: React.Dispatch<React.SetStateAction<Equation[]>>;
+}
+
+const defaultColors = ['#FF00FF', '#00FFFF', '#FFFF00', '#FF0000', '#00FF00', '#0000FF'];
+
+export function EquationEditor({ equations, setEquations }: EquationEditorProps) {
+  const addEquation = () => {
+    const newId = equations.length > 0 ? Math.max(...equations.map(e => e.id)) + 1 : 1;
+    const nextColor = defaultColors[equations.length % defaultColors.length];
+    setEquations([
+      ...equations,
+      { id: newId, value: '', color: nextColor, isVisible: true },
+    ]);
+  };
+
+  const updateEquation = (id: number, field: keyof Equation, value: string | boolean) => {
+    setEquations(
+      equations.map(eq => (eq.id === id ? { ...eq, [field]: value } : eq))
+    );
+  };
+
+  const removeEquation = (id: number) => {
+    setEquations(equations.filter(eq => eq.id !== id));
+  };
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between items-center">
+        <h3 className="font-semibold font-headline">Functions</h3>
+        <Button size="sm" onClick={addEquation}>
+          <Plus className="h-4 w-4 me-2" /> Add
+        </Button>
+      </div>
+      <div className="space-y-4">
+        {equations.map(eq => (
+          <div key={eq.id} className="space-y-2">
+             <Label htmlFor={`eq-${eq.id}`} className="text-sm font-medium">f(x) =</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                id={`eq-${eq.id}`}
+                type="text"
+                value={eq.value}
+                onChange={e => updateEquation(eq.id, 'value', e.target.value)}
+                placeholder="e.g., x^2"
+                className="font-mono"
+              />
+              <div className="relative">
+                <Input
+                  type="color"
+                  value={eq.color}
+                  onChange={e => updateEquation(eq.id, 'color', e.target.value)}
+                  className="w-8 h-8 p-0 border-none bg-transparent appearance-none cursor-pointer"
+                  style={{'--color': eq.color} as React.CSSProperties}
+                />
+                 <Palette className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white mix-blend-difference pointer-events-none" />
+              </div>
+               <Switch
+                checked={eq.isVisible}
+                onCheckedChange={checked => updateEquation(eq.id, 'isVisible', checked)}
+                aria-label="Toggle visibility"
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => removeEquation(eq.id)}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
