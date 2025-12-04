@@ -84,7 +84,7 @@ export function createFunction(expression: string): (x: number) => number {
   } catch (e) {
     console.error('Error creating function:', e);
     // This outer catch is a fallback. The inner try/catch should handle most evaluation errors.
-    // However, if the expression has a syntax error that `new Function` rejects, this will catch it.
+    // However, if the expression has a syntax error that new Function rejects, this will catch it.
     return () => NaN;
   }
 }
