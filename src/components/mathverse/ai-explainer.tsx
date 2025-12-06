@@ -15,6 +15,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 import { explainGraphWithAI, type ExplainGraphWithAIInput } from '@/ai/flows/explain-graph-with-ai';
 import type { Equation } from './equation-editor';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface AiExplainerProps {
   equations: Equation[];
@@ -75,7 +76,7 @@ export function AiExplainer({ equations, getGraphAsSvgDataUri }: AiExplainerProp
               An AI-generated analysis of the function(s).
             </DialogDescription>
           </DialogHeader>
-          <div className="py-4" dir="ltr">
+          <ScrollArea className="max-h-[60vh] rounded-md border p-4" dir="ltr">
             {isLoading && (
               <div className="space-y-2">
                 <Skeleton className="h-4 w-full" />
@@ -91,7 +92,7 @@ export function AiExplainer({ equations, getGraphAsSvgDataUri }: AiExplainerProp
               </Alert>
             )}
             {explanation && <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">{explanation}</div>}
-          </div>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
     </>
