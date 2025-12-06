@@ -66,7 +66,7 @@ export function AiExplainer({ equations, getGraphAsSvgDataUri }: AiExplainerProp
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-[425px] md:max-w-[600px]">
-          <DialogHeader>
+          <DialogHeader dir="ltr">
             <DialogTitle className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary" />
               AI Graph Explanation
