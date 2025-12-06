@@ -75,7 +75,7 @@ export function AiExplainer({ equations, getGraphAsSvgDataUri }: AiExplainerProp
               An AI-generated analysis of the function(s).
             </DialogDescription>
           </DialogHeader>
-          <div className="py-4">
+          <div className="py-4" dir="ltr">
             {isLoading && (
               <div className="space-y-2">
                 <Skeleton className="h-4 w-full" />
