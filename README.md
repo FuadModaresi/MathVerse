@@ -42,8 +42,9 @@ MathVerse is an interactive graphing calculator and AI math tutor built with Nex
     -   A dialog box will appear with an AI-generated analysis of the functions.
 
 ---
-
 ## فارسی (Persian)
+
+MathVerse یک ماشین حساب رسم نمودار تعاملی و معلم خصوصی ریاضی مبتنی بر هوش مصنوعی است که با Next.js و Firebase Studio ساخته شده است. این برنامه یک پلتفرم پویا و شهودی برای دانش‌آموزان، معلمان و علاقه‌مندان به ریاضی فراهم می‌کند تا توابع ریاضی را به صورت بصری درک و تحلیل کنند.
 
 ### ویژگی‌ها
 
