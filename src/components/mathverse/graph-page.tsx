@@ -8,6 +8,7 @@ import { AiExplainer } from './ai-explainer';
 import { Card } from '@/components/ui/card';
 import type { Equation } from './equation-editor';
 import { Separator } from '../ui/separator';
+import { GraphPreview } from './graph-preview';
 
 export function GraphPage() {
   const [equations, setEquations] = useState<Equation[]>([
@@ -40,7 +41,10 @@ export function GraphPage() {
         <Separator/>
         <AiExplainer equations={equations} getGraphAsSvgDataUri={getGraphAsSvgDataUri} />
       </Card>
-      <Card className="overflow-hidden" ref={graphContainerRef}>
+      <div className="relative md:hidden">
+        <GraphPreview equations={equations} />
+      </div>
+      <Card className="overflow-hidden hidden md:block" ref={graphContainerRef}>
         <GraphingEngine equations={equations.filter(eq => eq.isVisible)} />
       </Card>
     </div>
