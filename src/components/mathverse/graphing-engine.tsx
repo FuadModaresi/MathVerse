@@ -121,7 +121,6 @@ export function GraphingEngine({ equations }: GraphingEngineProps) {
         </div>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 20, right: 40, left: 10, bottom: 20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
           <XAxis
             dataKey="x"
             type="number"
