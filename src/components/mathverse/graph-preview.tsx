@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Maximize } from 'lucide-react';
 import { GraphingEngine } from './graphing-engine';
 import type { Equation } from './equation-editor';
+import { DialogDescription } from '@/components/ui/dialog';
 
 interface GraphPreviewProps {
   equations: Equation[];
@@ -28,6 +29,12 @@ export function GraphPreview({ equations }: GraphPreviewProps) {
         </Button>
       </DialogTrigger>
       <DialogContent className="w-screen h-screen max-w-none p-0">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Graph Preview</DialogTitle>
+          <DialogDescription>
+            A full-screen view of the interactive graph.
+          </DialogDescription>
+        </DialogHeader>
         <GraphingEngine equations={equations.filter(eq => eq.isVisible)} />
       </DialogContent>
     </Dialog>
