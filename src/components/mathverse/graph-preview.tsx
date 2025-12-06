@@ -8,9 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Maximize } from 'lucide-react';
+import { Maximize, ArrowLeft } from 'lucide-react';
 import { GraphingEngine } from './graphing-engine';
 import type { Equation } from './equation-editor';
 import { DialogDescription } from '@/components/ui/dialog';
@@ -36,6 +37,12 @@ export function GraphPreview({ equations }: GraphPreviewProps) {
           </DialogDescription>
         </DialogHeader>
         <GraphingEngine equations={equations.filter(eq => eq.isVisible)} />
+        <DialogClose asChild>
+            <Button variant="outline" className="absolute top-4 left-4 z-20">
+                <ArrowLeft className="w-4 h-4 me-2" />
+                Back to Editor
+            </Button>
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );
